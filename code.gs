@@ -8,7 +8,12 @@ var smstext = "Bonjour, votre inscription est confirmée pour la campagne de vac
 var emailsubject = "ds";
 var emailtext = "Bonjour<br><br>Merci de votre inscription à MédecinDirect.<br><br>Pourriez-vous";
 
-function clickRDV () {
+function clickRDVgetAppointmentsforIntervention (intervention_id) {
+  var excel = new ExcelClass();
+  var comm = new CommunicationClass();
+  excel.setsheetbyId("17M8PJ-M5cjKMSkT7NySBIDj1--6rd9DjscDrwcWHiCY",0);
+  excel.setColsAuto();
+  
   var headers = {
     "Authorization" : "Basic " + Utilities.base64Encode(email + ':' + pass)
   };
@@ -16,12 +21,16 @@ function clickRDV () {
     "method":"GET",
     "headers":headers
   };
-  var url = "https://www.clicrdv.com/api/v1/appointments.json?apikey="+apikey+"&intervention_ids=[2965055]";
+  var url = "https://www.clicrdv.com/api/v1/appointments.json?apikey="+apikey+"&intervention_ids=["+intervention_id+"]";
   var response = UrlFetchApp.fetch(url, params); 
   response = JSON.parse(response);
   
   for (var i = 0; i < response.records.length; i++) {
     var element = response.records[i];
+    excel.sheet.getRange(i+2,1).setValue(element.fiche.lastname);
+    excel.sheet.getRange(i+2,2).setValue(element.fiche.firstname);
+    excel.sheet.getRange(i+2,3).setValue(element.fiche.firstphone);
+    excel.sheet.getRange(i+2,4).setValue(element.fiche.email);
     Logger.log(element.fiche.lastname);
   }
   
