@@ -8,6 +8,26 @@ var smstext = "Bonjour, votre inscription est confirmée pour la campagne de vac
 var emailsubject = "ds";
 var emailtext = "Bonjour<br><br>Merci de votre inscription à MédecinDirect.<br><br>Pourriez-vous";
 
+function clickRDV () {
+  var headers = {
+    "Authorization" : "Basic " + Utilities.base64Encode(email + ':' + pass)
+  };
+  var params = {
+    "method":"GET",
+    "headers":headers
+  };
+  var url = "https://www.clicrdv.com/api/v1/appointments.json?apikey="+apikey+"&intervention_ids=[2965055]";
+  var response = UrlFetchApp.fetch(url, params); 
+  response = JSON.parse(response);
+  
+  for (var i = 0; i < response.records.length; i++) {
+    var element = response.records[i];
+    Logger.log(element.fiche.lastname);
+  }
+  
+}
+
+
 function SendTest() {
   var comm = new CommunicationClass();
   var data = {};
